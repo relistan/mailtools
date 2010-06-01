@@ -1,0 +1,5 @@
+A simple set of tools for parsing a UNIX-style mbox file and for
+uploading the messages from an mbox file to a remote IMAP server.
+This has been used and tested against Google Gmail and is good for
+migrating old archived mail to Gmail or other IMAP servers that
+accept appending messages to your mailboxes.
