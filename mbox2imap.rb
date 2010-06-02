@@ -72,7 +72,7 @@ mbox.parse
 
 imap = Net::IMAP.new(
 	$options[:hostname], 
-	$options[:port] ? $options[:port] : 143, 
+	$options[:port],
 	$options[:ssl]
 )
 imap.login(
