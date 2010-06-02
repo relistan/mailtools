@@ -82,8 +82,8 @@ class Email < Array
 end
 
 if $0 == __FILE__
-	mbox = Mbox.new ARGV[0]
 	if ARGV.size > 1
+		mbox = Mbox.new ARGV[0]
 		mbox.parse
 		mail = mbox[ARGV[1].to_i].parse
 		puts
@@ -93,8 +93,11 @@ if $0 == __FILE__
 		puts "Subject: #{mail.Subject}"
 		puts
 		puts mail.body
-	else
+	elsif ARGV.size == 1
+		mbox = Mbox.new ARGV[0]
 		mbox.index
 		puts "TOTAL: #{mbox.size}"
+	else
+		puts "Usage: mbox.rb mboxfilename [msg_index]"
 	end
 end
