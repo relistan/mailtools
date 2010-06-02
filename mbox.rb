@@ -4,14 +4,17 @@ require 'time'
 
 class Mbox < Array
 	def initialize filename
-		@filename = filename
+		@filename = File.expand_path(filename)
+		if !File.exist? @filename
+			raise IOError, "Can't find #{@filename}"
+		end
 	end
 
 	def parse 
 		blank = 0
 		mail = Email.new
 		i = 0
-		File.open(File.expand_path(@filename), "r").each_line do |line|
+		File.open(@filename, "r").each_line do |line|
 			if blank && line =~ /\AFrom .*\d{4}/
 				self << mail if mail.size > 0
 				mail = Email.new line
@@ -43,7 +46,7 @@ class Email < Array
 
 	def initialize *args
 		if !args.nil?
-			args.each { |a| self << a }
+			self.concat args
 		end
 		@header = {}
 		@body = []
@@ -80,6 +83,18 @@ end
 
 if $0 == __FILE__
 	mbox = Mbox.new ARGV[0]
-	mbox.index
-	puts "TOTAL: #{mbox.size}"
+	if ARGV.size > 1
+		mbox.parse
+		mail = mbox[ARGV[1].to_i].parse
+		puts
+		puts "From:	#{mail.From}"
+		puts "To:	#{mail.To}"
+		puts "Date:	#{mail.Date}"
+		puts "Subject: #{mail.Subject}"
+		puts
+		puts mail.body
+	else
+		mbox.index
+		puts "TOTAL: #{mbox.size}"
+	end
 end
