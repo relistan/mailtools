@@ -2,8 +2,15 @@
 
 require 'net/imap'
 require 'optparse'
-require 'mbox'
-require 'pp'
+
+if File.exist? 'mbox.rb'
+	require 'mbox'
+elsif File.exist? File.join(File.expand_path(File.dirname(__FILE__)), 'mbox.rb')
+	require File.join(File.expand_path(File.dirname(__FILE__)), 'mbox.rb')
+else
+	STDERR.puts "Can't find mbox.rb that shipped with mailtools."
+	exit
+end
 
 $options = {}
 
