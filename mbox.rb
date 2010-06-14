@@ -77,7 +77,10 @@ class Email < Array
 	end
 
 	def method_missing method
-		return @header[method.to_s]
+		return @header[method.to_s] if @header[method.to_s]
+		return @header[method.to_s.gsub(/_/, '-')]
+
+		raise NoMethodError
 	end
 end
 
