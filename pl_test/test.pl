@@ -1,12 +1,13 @@
 #!/usr/bin/perl
 
 use strict;
-use Test::More tests => 7;
+use Test::More tests => 8;
+use Test::Output;
 use File::Basename qw/dirname/;
 
 my $basedir = dirname(__FILE__) . "/..";
 my $mbox_file = "$basedir/mbox.pl";
-require $mbox_file;
+require_ok $mbox_file;
 
 # New Mailbox
 my $mbox = new_ok "Mbox";
@@ -22,3 +23,6 @@ isa_ok $mbox->get(1), 'Email', "The object Mbox returned";
 like join("\n", @{ $mbox->get(4)->parse->body }), qr/funniest things I've ever/, "Fetches the correct message";
 like $mbox->get(5)->parse->header('Subject'), qr/new members/, "Parses message Subject header properly";
 is $mbox->get(6)->parse->header('Date'), "Mon, 8 Oct 2001 01:36:38 -0700 (PDT)", "Parses message Date header properly";
+
+# Displays index properly
+stdout_like { $mbox->index() } qr/0001: .*?|.*\n0002:/, "Has line breaks and line numbers"

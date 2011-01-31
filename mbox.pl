@@ -59,7 +59,7 @@ sub parse {
 	my $mail = new Email();
 	my $i = 0;
 
-	my $fh = new FileHandle("<" . $self->filename()) or die "Can't open ${self->filename}\n";
+	my $fh = new FileHandle("<" . $self->filename()) or die "Can't open " . $self->filename() . "\n";
 	while(my $line = $fh->getline()) {
 		if($blank && $line =~ /\AFrom .*\d{4}/) {
 			push(@{ $self->mail() }, $mail) unless $mail->size() <= 0;
