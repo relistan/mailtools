@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 use strict;
-use Test::More tests => 8;
+use Test::More tests => 9;
 use Test::Output;
 use File::Basename qw/dirname/;
 
