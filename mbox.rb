@@ -22,8 +22,9 @@ class Mbox < Array
 				blank = 0
 			else
 				blank = (line =~ /\A\Z/o ? 1  : 0)
-				mail << line
+				mail << line unless (blank && i == 0)
 			end
+			i += 1
 		end
 
 		self << mail if mail.size > 0
