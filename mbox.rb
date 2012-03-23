@@ -38,7 +38,6 @@ class Mbox < Array
       message.parse
       puts "#{sprintf("%04d", i)}: #{sprintf("%-50s", message.Subject)} | #{message.Date}"
     end
-
   end
 end
 
