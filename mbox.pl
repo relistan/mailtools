@@ -2,6 +2,8 @@
 
 use FileHandle;
 
+use Exception::Class ( 'Mbox::ParsingException' );
+
 package Email;
 use Moose;
 has headers => ( isa => 'HashRef',  is => 'ro', required => 1, default => sub { {} } );
@@ -12,7 +14,7 @@ has text =>    ( isa => 'ArrayRef', is => 'rw', required => 1, default => sub { 
 sub parse {
 	my($self) = @_;
 
-	if( (@{ $self->body() } > 0) || keys(%{ $self->headers() }) > 0) { return; } # Don't keep re-parsing
+	if( (@{ $self->body() } > 0) || scalar keys(%{ $self->headers() }) > 0) { return; } # Don't keep re-parsing
 
 	my $state = 'header';
 	foreach my $line (@{ $self->text() }) {
@@ -53,13 +55,13 @@ has 'mail' =>     ( isa => 'ArrayRef', is => 'ro', default => sub { [] } );
 
 sub parse {
 	my($self) = @_;
-	die "Don't have a mailbox file to parse!\n" unless defined($self->filename());
+	die Mbox::ParsingException( error => "Don't have a mailbox file to parse!\n" ) unless defined($self->filename());
 
 	my $blank = 0;
 	my $mail = new Email();
 	my $i = 0;
-
-	my $fh = new FileHandle("<" . $self->filename()) or die "Can't open " . $self->filename() . "\n";
+	
+	my $fh = new FileHandle("<" . $self->filename()) or Mbox::ParsingException->throw( error => "Can't open " . $self->filename() . "\n");
 	while(my $line = $fh->getline()) {
 		if($blank && $line =~ /\AFrom .*\d{4}/) {
 			push(@{ $self->mail() }, $mail) unless $mail->size() <= 0;
@@ -106,7 +108,10 @@ if($0 eq __FILE__) {
 	if(@ARGV > 1) {
 		my $mbox = new Mbox;
 		$mbox->filename($ARGV[0]);
-		$mbox->parse();
+		eval {
+			$mbox->parse();
+			1;
+		} or die "Exception: " . $@->error . " " . $@->trace;
 		my $mail = $mbox->get($ARGV[1])->parse();
 
 		print "\n";
@@ -122,7 +127,10 @@ if($0 eq __FILE__) {
 	} elsif(@ARGV == 1) {
 		my $mbox = new Mbox;
 		$mbox->filename($ARGV[0]);
-		$mbox->index();
+		eval {
+			$mbox->index();
+			1;
+		} or die "Exception: " . $@->error . " " . $@->trace;
 		print "TOTAL: ", $mbox->size(), "\n";
 	} else {
 		print "Usage: mbox.rb mboxfilename [msg_index]\n"
