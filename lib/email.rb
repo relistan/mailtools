@@ -44,7 +44,7 @@ class Email
     state = :header
     @raw_text.each do |line| 
       if blank?(line) && state == :header
-          state = :body
+        state = :body
         next # Skip first blank line
       end
 
