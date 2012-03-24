@@ -3,14 +3,8 @@
 require 'net/imap'
 require 'optparse'
 
-if File.exist? 'mbox.rb'
-  require 'mbox'
-elsif File.exist? File.join(File.expand_path(File.dirname(__FILE__)), 'mbox.rb')
-  require File.join(File.expand_path(File.dirname(__FILE__)), 'mbox.rb')
-else
-  STDERR.puts "Can't find mbox.rb that shipped with mailtools."
-  exit
-end
+$: << File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib')
+require 'mbox'
 
 $options = {}
 
@@ -75,7 +69,6 @@ end
 parse_opts
 
 mbox = Mbox.new($options[:filename])
-mbox.parse
 
 imap = Net::IMAP.new(
   $options[:hostname], 
@@ -92,14 +85,13 @@ flags = $options[:markread] ? [:Seen] : []
 failed = []
 puts "Beginning upload of #{(mbox.size) - 1} messages from #{$options[:filename]}"
 mbox.each_with_index do |msg,i|
-  msg.parse
-  puts "#{sprintf('%04d', i)} #{sprintf('%50s', msg.Subject)} | #{msg.Date}"
+  puts "#{sprintf('%04d', i)} #{sprintf('%50s', msg.subject)} | #{msg.date}"
   tried = 0
   begin
     tried += 1
     imap.append($options[:folder], msg.join(''), 
       flags,
-      msg.Date
+      msg.date
     )
   rescue Net::IMAP::NoResponseError => e
     if tried < 10
@@ -118,7 +110,7 @@ puts Time.now
 print "Total: #{(mbox.size) - 1}"
 if failed.size > 0
   puts " failed: #{(failed.size) - 1}"
-  failed.each { |m| puts "fail #{sprintf("%04d", m.index)} #{m.Subject}" }
+  failed.each { |m| puts "fail #{sprintf("%04d", m.index)} #{m.subject}" }
   puts "-" * 80
 end
 puts

@@ -3,14 +3,8 @@
 require 'time'
 require 'optparse'
 
-if File.exist? 'mbox.rb'
-  require 'mbox'
-elsif File.exist? File.join(File.expand_path(File.dirname(__FILE__)), 'mbox.rb')
-  require File.join(File.expand_path(File.dirname(__FILE__)), 'mbox.rb')
-else
-  STDERR.puts "Can't find mbox.rb that shipped with mailtools."
-  exit
-end
+$: << File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib')
+require 'mbox'
 
 $options = {}
 
@@ -67,7 +61,6 @@ dirs.each do |dir|
     mail = Email.new File.open(file, "r").readlines
     next if mail.size < 1
   
-    mail.parse
     from = mail.From ? mail.From : 'unknown@example.com'
   
     outfile.puts "\nFrom <#{from}> #{mail.Date}\n#{mail.join('')}"
