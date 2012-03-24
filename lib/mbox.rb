@@ -15,7 +15,7 @@ class Mbox
     if !File.exist? @filename
       raise IOError, "Can't find #{@filename}"
     end
-	parse
+    parse
   end
 
   def index_array
@@ -31,24 +31,24 @@ class Mbox
   private
     def new_message_line?(line)
       !!(line =~ /\AFrom .*\d{4}/)
-	end
+    end
 
-	def blank?(line)
+    def blank?(line)
       !!(line =~ /\A\Z/o)
-	end
+    end
 
     def parse 
-	  email_data = []
+    email_data = []
       File.open(@filename, "r").each_line do |line|
-	    next if blank?(line) && @messages.empty?
+        next if blank?(line) && @messages.empty?
 
         if new_message_line?(line) && !email_data.empty?
-		  message = Email.from_contents(email_data)
+  	      message = Email.from_contents(email_data)
           message.index = @messages.size
           @messages << message unless message.empty?
-		  email_data = []
+  	      email_data = []
         else
-          email_data << line
+            email_data << line
         end
       end
 

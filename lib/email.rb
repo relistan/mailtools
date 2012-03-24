@@ -3,7 +3,7 @@ class Email
   attr_accessor :header, :body, :index
 
   def initialize
-	@raw_text = []
+  @raw_text = []
     @header = {}
     @body = []
   end
@@ -11,14 +11,14 @@ class Email
   def self.from_contents(contents)
     email = new
     email.concat contents
-	email.parse
-	email
+    email.parse
+    email
   end
 
   def method_missing method
     return @header[method.to_s] if @header[method.to_s]
-    return @header[method.to_s.capitalize.gsub(/_/, '-')]
-
+	standardized = method.to_s.capitalize.gsub(/_/, '-')
+    return @header[standardized] if @header[standardized]
     raise NoMethodError
   end
 
@@ -31,7 +31,7 @@ class Email
   end
 
   def empty?
-	header.empty? && body.empty?
+    header.empty? && body.empty?
   end
 
   def size
@@ -43,14 +43,14 @@ class Email
 
     state = :header
     @raw_text.each do |line| 
-	  if blank?(line) && state == :header
-        state = :body
-		next # Skip first blank line
-	  end
+      if blank?(line) && state == :header
+          state = :body
+        next # Skip first blank line
+      end
 
       case state 
-	    when :header then header_from_line(line)
-		when :body then body << line
+        when :header then header_from_line(line)
+        when :body then body << line
       end
     end
 
@@ -63,15 +63,14 @@ class Email
   private
 
     def blank?(line)
-      !!(line =~ /\A\Z/)
-	end
+      line.empty?
+    end
 
-	def header_from_line(line)
+    def header_from_line(line)
       if line =~ /^([^ ]+?):(.+)$/
         key   = $1 || ''
         value = $2 || ''
         @header[key.capitalize] = value.strip
       end
-	end
-
+    end
 end
