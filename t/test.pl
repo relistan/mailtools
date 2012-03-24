@@ -5,13 +5,13 @@ use Test::More tests => 9;
 use Test::Output;
 use File::Basename qw/dirname/;
 
-my $basedir = dirname(__FILE__) . "/..";
+my $basedir = dirname(__FILE__) . "/../bin";
 my $mbox_file = "$basedir/mbox.pl";
 require_ok $mbox_file;
 
 # New Mailbox
 my $mbox = new_ok "Mbox";
-$mbox->filename("$basedir/spec/fixtures/enron.mbox");
+$mbox->filename("$basedir/../spec/fixtures/enron.mbox");
 is $mbox->size(), 0, "Unparsed mailbox is empty";
 
 # Parses Mailbox
