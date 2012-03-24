@@ -4,7 +4,7 @@ require 'time'
 require 'optparse'
 
 $: << File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib')
-require 'mbox'
+require 'mailtools/mbox'
 
 $options = {}
 
@@ -58,7 +58,7 @@ dirs.each do |dir|
 
     file = File.join(dir.path, file)
   
-    mail = Email.new File.open(file, "r").readlines
+    mail = Mailtools::Email.new File.open(file, "r").readlines
     next if mail.size < 1
   
     from = mail.From ? mail.From : 'unknown@example.com'

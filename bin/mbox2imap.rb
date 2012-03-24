@@ -4,7 +4,7 @@ require 'net/imap'
 require 'optparse'
 
 $: << File.join(File.expand_path(File.dirname(__FILE__)), '..', 'lib')
-require 'mbox'
+require 'mailtools/mbox'
 
 $options = {}
 
@@ -68,7 +68,7 @@ end
 
 parse_opts
 
-mbox = Mbox.new($options[:filename])
+mbox = Mailtools::Mbox.new($options[:filename])
 
 imap = Net::IMAP.new(
   $options[:hostname], 

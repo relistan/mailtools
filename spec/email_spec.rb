@@ -1,12 +1,12 @@
 $:<< File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'mbox'
+require 'mailtools/mbox'
 
 fixtures_path = File.join(File.dirname(__FILE__), 'fixtures')
-describe Email do
+describe Mailtools::Email do
 
   let(:mail) do
     data = File.read(File.join(fixtures_path, 'enron.mbox')).split(/\n/)
-	Email.from_contents(data[339..385])
+	Mailtools::Email.from_contents(data[339..385])
   end
 
   it "should separate the header and body properly" do
@@ -31,7 +31,7 @@ describe Email do
     mail.X_folder.should_not be_nil
   end
 
-  it "should take varargs as the initial contents" do
+  it "should parse the whole message" do
     msg = [
       "From enron@example.com 08-Oct-2001 21:03:25 +0000", 
       "To: skillingj@enron.com",
@@ -39,9 +39,14 @@ describe Email do
       "",
       "Body text."
     ]
-    mail = Email.from_contents(msg)
+    mail = Mailtools::Email.from_contents(msg)
     mail.should have(3).items
     mail.Date.should == '08-Oct-2001 14:03:25 +0000'
+	mail.body.should == [ 'Body text.' ]
+  end
+
+  it "should raise when calling a method that doesn't exist" do
+    lambda { mail.asdf }.should raise_error(NoMethodError)
   end
 
 end

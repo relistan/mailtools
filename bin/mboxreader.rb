@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 
 $: << File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'mbox'
+require 'mailtools/mbox'
 
 if ARGV.size > 1
-  mbox = Mbox.new ARGV[0]
+  mbox = Mailtools::Mbox.new ARGV[0]
   mail = mbox[ARGV[1].to_i]
   puts
   puts "From:  #{mail.From}"
@@ -14,7 +14,7 @@ if ARGV.size > 1
   puts
   puts mail.body
 elsif ARGV.size == 1
-  mbox = Mbox.new ARGV[0]
+  mbox = Mailtools::Mbox.new ARGV[0]
   mbox.index
   puts "TOTAL: #{mbox.size}"
 else
