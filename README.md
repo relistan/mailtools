@@ -29,3 +29,7 @@ A command line like this should work for uploading to Gmail:
 <code>
 bin/mbox2imap.rb -f yourmailfilehere -h imap.gmail.com:993 -p yourpass -u youruname -m MyOldMail -s -r
 </code>
+
+###Perl
+The included Ruby classes are also mirrored here as two Moose
+classes in Perl.  bin/mbox.pl contains all of the functionality.
