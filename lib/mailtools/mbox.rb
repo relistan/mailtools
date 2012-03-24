@@ -38,11 +38,11 @@ module Mailtools
         !!(line =~ /\A[\r\n]*\Z/)
       end
 
-	  def append_message(email_data)
-    	message = Email.from_contents(email_data)
+      def append_message(email_data)
+        message = Email.from_contents(email_data)
         message.index = @messages.size
         @messages << message unless message.empty?
-	  end
+      end
   
       def parse 
         email_data = []
@@ -50,14 +50,14 @@ module Mailtools
           next if blank?(line) && @messages.empty?
           if new_message_line?(line) && !email_data.empty?
             append_message(email_data) 
-    	    email_data = []
+            email_data = []
           else
             email_data << line
           end
         end
   
         # Store the last message
-		append_message(email_data) unless email_data.empty?
+        append_message(email_data) unless email_data.empty?
       end
   end
 end
